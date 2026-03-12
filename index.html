@@ -55,6 +55,22 @@
             border: 1px solid lightgreen;
         }
 
+        .radio-group{
+            margin: 10px 0;
+        }
+
+        .radio-group label {
+            display: inline-block;
+            margin-right: 15px;
+            font-weight: normal;
+        }
+
+        .radio-group input {
+            width: auto;
+            margin-right: 5px;
+        }
+
+
         .checkbox-group {
             margin: 10px 0;
         }
@@ -148,7 +164,13 @@
             <option value="院生・その他">院生・その他</option>
         </select>
 
-        <label>興味のあるトピック（任意）</label>
+        <label>懇親会への参加有無</label>
+        <div class="radio-group">
+            <label><input type="radio" name="party" value="しない" checked>しない</label>
+            <label><input type="radio" name="party" value="する" checked>する</label>
+        </div>
+
+         <label>興味のあるトピック（任意）</label>
         <div class="checkbox-group">
             <label><input type="checkbox" name="interest" value="プログラミング"> プログラミング</label>
             <label><input type="checkbox" name="interest" value="デザイン"> デザイン</label>
@@ -156,6 +178,9 @@
         </div>
         <label>住所（任意）</label>
         <input type="text" id="userAddress" placeholder="住所を入力">
+
+        <label>ひとこと（任意）</label>
+        <textarea id="userMessage" placheholder="ご意見やメッセージなど"></textarea>
 
         <button onclick="checkRegistration()">参加登録をする</button>
 
@@ -175,7 +200,7 @@
             const university = document.getElementById('userUniversity');
             const department = document.getElementById('userDepartment');
             const grade = document.getElementById('userGrade');
-            
+            const coment = document.getElementById('userMessage').value;
 
             // 結果表示を初期化
             const resultDiv = document.getElementById('result');
@@ -261,6 +286,7 @@
                 grade.className = "normal";
             }
 
+
             if (message !== "") {
                 resultDiv.className = "warning";
                 message += "が入力されていません。";
@@ -272,6 +298,21 @@
             resultDiv.className = "success";
             message = "ようこそ" + name.value + "さん！<br>学生交流会への仮登録が完了しました。";
             message += "<br>メール；" + email.value;
+
+            // 懇親会参加有無
+            const radios = document.getElementsByName('party');
+
+            let py = '';
+
+            for (const radio of radios) {
+                if (radio.checked === true) {
+                        py = '<br>参加：';
+                        py += radio.value;
+                    
+                }
+            }
+
+            message += py
 
             // チェックボックス（複数選択）の取得
             const checkboxes = document.getElementsByName('interest');
@@ -296,13 +337,17 @@
                 message += "<br>ご住所：" + address;
             }
 
+            if(coment !== ""){
+                message += "<br>ひとこと<br>" + coment;
+            }
+
             resultDiv.innerHTML = message;
 
 
 
             // DB保存を想定したログ出力
             console.log("登録データ：", {
-                name, email, interests, address
+                name, email, interests, address, university,department, grade,
             });
 
             addRegistCount();
