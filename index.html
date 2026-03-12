@@ -42,6 +42,18 @@
             box-sizing: border-box;
 
         }
+        /* エラーの表示 */
+        input.error,
+        select.error,
+        textarea.error {
+            border: 2px solid crimson;
+        }
+
+        input.normal,
+        select.normal,
+        textarea.normal {
+            border: 1px solid lightgreen;
+        }
 
         .checkbox-group {
             margin: 10px 0;
@@ -115,10 +127,10 @@
         <p>お名前を入力して参加ボタンを押してください。</p>
 
         <label>お名前（必須）</label>
-        <input type="text" id="userName" placeholber="例 ：　山田　太郎">
+        <input type="text" id="userName" placeholder="例 ：　山田　太郎">
 
         <label>メールアドレス（必須）</label>
-        <input type="text" id="userEmail" placeholber="例 ：taro@example.ac.jp">
+        <input type="text" id="userEmail" placeholder="例 ：taro@example.ac.jp">
 
         <label>大学名（必須）</label>
         <input type="text" id="userUniversity" placeholder="例：○○大学">
@@ -157,12 +169,13 @@
         // 参加処理登録
 
         function checkRegistration() {
-            const name = document.getElementById('userName').value;
+            const name = document.getElementById('userName');
             const address = document.getElementById('userAddress').value;
-            const email = document.getElementById('userEmail').value;
-            const unuversity = document.getElementById('userUniversity').value;
-            const department = document.getElementById('userDepartment').value;
-            const grade = document.getElementById('userGrade').value;
+            const email = document.getElementById('userEmail');
+            const university = document.getElementById('userUniversity');
+            const department = document.getElementById('userDepartment');
+            const grade = document.getElementById('userGrade');
+            
 
             // 結果表示を初期化
             const resultDiv = document.getElementById('result');
@@ -170,46 +183,95 @@
             resultDiv.innerHTML = "";
             resultDiv.className = "";
 
+            //入力エラー判定の初期化
+            name.className = "";
+            email.className = "";
+            university.className = "";
+            department.className = "";
+            grade.className = "";
+
+            // エラーの可否
+            let chkerr = false;
+
             let message = "";
 
             // 必須項目のバリデーション（検証）
-            if (name.trim() === "") {
+            // 名前
+            if (name.value.trim() === "") {
+                if(chkerr === false){
+                    name.focus();
+                    chkerr = true;
+                }
                 message += "<p>名前</p>";
-
-
+                name.className = "error";
+                
+            }else{
+                name.className = "normal";
             }
 
-            if (email.trim() === "") {
+            // メール
+            if (email.value.trim() === "") {
+                if(chkerr === false){
+                    email.focus();
+                    chkerr = true;
+                }
                 message += "<p>メールアドレス</p>";
-
+                email.className = "error";
+          
+            }else{
+                email.className = "normal";
             }
 
-            if (unuversity.trim() === "") {
+            // 大学名
+            if (university.value.trim() === "") {
+                if(chkerr === false){
+                    university.focus();
+                    chkerr = true;
+                }
                 message += "<p>大学名</p>";
-
+                university.className = "error";
+  
+            }else{
+                university.className = "normal";
             }
 
-            if (department.trim() === "") {
+            // 学部学科
+            if (department.value.trim() === "") {
+                if(chkerr === false){
+                    department.focus();
+                    chkerr = true;
+                }
                 message += "<p>学部・学科</p>";
-
+                department.className = "error";
+  
+            }else{
+                department.className = "normal";
             }
 
-            if (grade.trim() === "") {
+            // 学年
+            if (grade.value.trim() === "") {
+                if(chkerr === false){
+                    grade.focus();
+                    chkerr = true;
+                }
                 message += "<p>学年</p>";
+                grade.className = "error";
 
+            }else{
+                grade.className = "normal";
             }
 
             if (message !== "") {
                 resultDiv.className = "warning";
-                message += "が入力されていません。"
+                message += "が入力されていません。";
                 resultDiv.innerHTML = message;
                 return
             }
 
             // これ以降正常な時の処理
             resultDiv.className = "success";
-            message = "ようこそ" + name + "さん！<br>学生交流会への仮登録が完了しました。";
-            message += "<br>メール；" + email;
+            message = "ようこそ" + name.value + "さん！<br>学生交流会への仮登録が完了しました。";
+            message += "<br>メール；" + email.value;
 
             // チェックボックス（複数選択）の取得
             const checkboxes = document.getElementsByName('interest');
