@@ -216,16 +216,16 @@
             grade.className = "";
 
             // エラーの可否
-            let chkerr = false;
+            let chkErr = false;
 
             let message = "";
 
             // 必須項目のバリデーション（検証）
             // 名前
             if (name.value.trim() === "") {
-                if(chkerr === false){
+                if(chkErr === false){
                     name.focus();
-                    chkerr = true;
+                    chkErr = true;
                 }
                 message += "<p>名前</p>";
                 name.className = "error";
@@ -236,9 +236,9 @@
 
             // メール
             if (email.value.trim() === "") {
-                if(chkerr === false){
+                if(chkErr === false){
                     email.focus();
-                    chkerr = true;
+                    chkErr = true;
                 }
                 message += "<p>メールアドレス</p>";
                 email.className = "error";
@@ -249,9 +249,9 @@
 
             // 大学名
             if (university.value.trim() === "") {
-                if(chkerr === false){
+                if(chkErr === false){
                     university.focus();
-                    chkerr = true;
+                    chkErr = true;
                 }
                 message += "<p>大学名</p>";
                 university.className = "error";
@@ -262,9 +262,9 @@
 
             // 学部学科
             if (department.value.trim() === "") {
-                if(chkerr === false){
+                if(chkErr === false){
                     department.focus();
-                    chkerr = true;
+                    chkErr = true;
                 }
                 message += "<p>学部・学科</p>";
                 department.className = "error";
@@ -275,9 +275,9 @@
 
             // 学年
             if (grade.value.trim() === "") {
-                if(chkerr === false){
+                if(chkErr === false){
                     grade.focus();
-                    chkerr = true;
+                    chkErr = true;
                 }
                 message += "<p>学年</p>";
                 grade.className = "error";
@@ -350,8 +350,68 @@
                 name, email, interests, address, university,department, grade,
             });
 
+            // LocalStrage保存処理
+
+        // 三項演算子　A（条件）？　B（真）：C（偽）
+        // split文字列を”特定の区切り文字（，）”でバラバラにして配列化するメゾット（関数）
+        const arrayInterests = interests ? interests.split(','):[];
+
+        // 以下上記と同じ意味
+        /*
+        let arrayInterests;
+        if(interest !== ""){
+            arrayInterest = interest.split(',');
+        }else{
+            arrayInterest =[];
+        }
+        */
+        
+        const userData = {
+            name: name.value,
+            email: email.value,
+            university: university.value,
+            department: department.value,
+            grade: grade.value,
+            interest: arrayInterests,
+            address: address,
+            message: coment,
+            party: radios.value,
+            // 更新日時
+            updateAt: new Date().toLocaleString()
+        };
+
+        // 保存実行（ローカルストレージへ）
+        saveToLocalStorage(userData);
+
+        console.log("登録データ：",{
+            name,email,university,department,grade,arrayInterests,address,coment
+        });
+
+        //
             addRegistCount();
         }
+
+        
+
+        /*
+        *LocalStorageに保存
+        *キー：メールアドレス
+        */
+        function saveToLocalStorage(date){
+
+            // すでに保存されている「名簿オブジェクト」を取得なければ新しい空のオブジェクト｛｝を作る
+            const storageKey = 'student_list';
+            const currentListJson = localStorage.getItem(storageKey);
+            let studentList = currentListJson ? JSON.parse(currentListJson):{};
+        //メールアドレスをキーにして、データを追加
+        // 例：studentList["taro@exsample.jp"] = {name:"山田太郎",...}
+        studentList[date.email] = date;
+
+        // 文字列に戻して保存
+        localStorage.setItem(storageKey,JSON.stringify(studentList));
+
+         }
+
 
         function addRegistCount() {
             registCount++;
