@@ -93,6 +93,14 @@
       font-size: 1rem;
     }
 
+    .button_inquiry{
+        background-color: #6c757d;
+    }
+
+    .button_inquiry:hover{
+        background-color: #333;
+    }
+
     button:hover {
       background-color: #0056b3;
     }
@@ -177,6 +185,8 @@
 
 
     <button onclick="checkRegistration()">参加登録をする</button>
+
+    <button onclick="loadRegistration()" class = "button_inquiry">参加登録情報を呼び出す</button>
 
     <div id="registCount"></div>
     <div id="result"></div>
@@ -402,6 +412,74 @@
 
       // 文字列に戻して保存
       localStorage.setItem(storageKey, JSON.stringify(studentList));
+
+    }
+
+    /*
+    登録済みデータをメールアドレスで検索し再セットする
+    */
+    
+    function loadRegistration(){
+        // ポップアップでメールアドレスを入力してもらう
+        const searchEmail = window.prompt('登録済みをメールアドレス入力してください');
+
+        // キャンセルされた、または空欄の場合は何もしない
+        if(!searchEmail) return;
+
+        // LocalStorageから名簿を取得
+        const storagekey = 'student_list';
+        const currentListJson = localStorage.getItem(storagekey);
+
+        if(!currentListJson){
+            alert('登録データがまだありません。');
+            return;
+        }
+
+        const studentList = JSON.parse(currentListJson);
+
+        // 入力されたメールアドレスでデータを検索
+        const userData = studentList[searchEmail.trim()];
+
+        if (!userData){
+            alert('該当するメールアドレスが見つかりませんでした');
+            return;
+        }
+        // データが見つかったら各入力フォームに値をセットする
+        document.getElementById('userName').value = userData.name;
+        document.getElementById('userEmail').value = userData.email;
+        document.getElementById('userUniversity').value = userData.university;
+        document.getElementById('userDepartment').value = userData.department;
+        document.getElementById('userGrade').value = userData.grade;
+        document.getElementById('userAddress').value = userData.address;
+        document.getElementById('userMessage').value = userData.message;
+
+        // ラジオボタンの再セット
+        const radios = document.getElementsByName('party');
+        for (const radio of radios){
+            if(userData.party === radio.value){
+                radio.checked = true;
+            }else{
+                radio.checked = false;
+            }        
+        }
+
+        // チェックボックス（興味）の再セット
+        const checkboxes = document.getElementsByName('interest');
+        for (const checkbox of checkboxes){
+            // 保存されている配列の中に値が含まれていたら”真：true”。なかったら”偽:false”を返す
+            checkbox.checked = userData.interests.includes(checkbox.value);
+            /*
+            checkbox.checked = false;
+            for (checkbox.value === interest){
+                if(checkbox.value === interest){
+                    checkbox.checked = true;
+                    break;
+                }
+            }
+            */
+        }
+        alert(userData.name + 'さんのデータを読み込みました。内容を修正して再登録も可能です。');
+
 
     }
 
