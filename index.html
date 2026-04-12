@@ -2,424 +2,419 @@
 <html lang="ja">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="Viewport" content="width=device-width,initial-scale=1">
-    <title>ランチ交流会　受付プロトタイプ</title>
-    <style>
-        body {
-            font-family: sana-serif;
-            padding: 40px;
-            line-height: 1.6;
-            background-color: #f4f7f6;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>学生交流会 参加登録フォーム</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 40px;
+      line-height: 1.6rem;
+      background-color: #f4f7f6;
+    }
 
-        }
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      margin: auto;
+    }
 
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
-            margin: auto;
-        }
+    h1 {
+      color: #333;
+      font-size: 1.5rem;
+      border-left: 5px solid #007bff;
+      padding-left: 15px;
+    }
 
-        h1 {
-            color: #333;
-            font-size: 1.5rem;
-            border-left: 5px solid #007bff;
-            padding-left: 15px;
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
 
-        }
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
 
-        input,
-        select,
-        textarea {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
+    /* 入力エラーの場合*/
+    input.error,
+    select.error,
+    textarea.error {
+      border: 1px solid crimson;
+      /* background-color: lightpink; */
+    }
 
-        }
-        /* エラーの表示 */
-        input.error,
-        select.error,
-        textarea.error {
-            border: 2px solid crimson;
-        }
+    /* 入力エラーの場合*/
+    input.success,
+    select.success,
+    textarea.success {
+      border: 1px solid limegreen;
+      /* background-color: lightpink; */
+    }
 
-        input.normal,
-        select.normal,
-        textarea.normal {
-            border: 1px solid lightgreen;
-        }
+    .checkbox-group,
+    .checkbox-radio {
+      margin: 10px 0;
+    }
 
-        .radio-group{
-            margin: 10px 0;
-        }
+    .checkbox-group label,
+    .checkbox-radio label {
+      display: inline-block;
+      margin-right: 15px;
+      font-weight: normal;
+    }
 
-        .radio-group label {
-            display: inline-block;
-            margin-right: 15px;
-            font-weight: normal;
-        }
+    .checkbox-group input,
+    .checkbox-radio input {
+      width: auto;
+      margin-right: 5px;
+    }
 
-        .radio-group input {
-            width: auto;
-            margin-right: 5px;
-        }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
 
+    button:hover {
+      background-color: #0056b3;
+    }
 
-        .checkbox-group {
-            margin: 10px 0;
-        }
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 5px;
+      display: none;
+    }
 
-        .checkbox-group label {
-            display: inline-block;
-            margin-right: 15px;
-            font-weight: normal;
-        }
+    div.success {
+      display: block !important;
+      background-color: #d4edda;
+      color: #155724;
+    }
 
-        .checkbox-group input {
-            width: auto;
-            margin-right: 5px;
-        }
+    div.error {
+      display: block !important;
+      background-color: lightpink;
+      color: #333;
+    }
 
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #0077ff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
+    /* errorクラス 配下の子孫 p 全てに適用 */
+    div.error p {
+      margin: 0.1rem;
+    }
 
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        #result {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 5px;
-            display: none;
-
-        }
-
-        .success {
-            display: block !important;
-            background-color: #d4edda;
-            color: #155724;
-
-        }
-
-        .warning {
-            display: block !important;
-            background-color: #fff3cd;
-            color: #856404;
-
-        }
-
-        /* warningクラス　配下の子孫ｐすべてに適用 */
-        .warning p {
-            margin: 0.1rem;
-        }
-
-        /* warningクラス　直下（）子供のｐすべてに適用 */
-        /* warning>p {
-        margin: 0;
-        } */
-    </style>
+    /* errorクラス 直下（子供）の p 全てに適用 */
+    /* .error>p {
+      margin: 0;
+    } */
+  </style>
 </head>
 
 <body>
 
-    <div class="card">
-        <h1>ランチ交流会　受付</h1>
-        <p>お名前を入力して参加ボタンを押してください。</p>
+  <div class="card">
+    <h1>学生交流会 参加登録</h1>
+    <p>プロフィールを入力して参加ボタンを押してください。</p>
 
-        <label>お名前（必須）</label>
-        <input type="text" id="userName" placeholder="例 ：　山田　太郎">
+    <label>お名前（必須）</label>
+    <input type="text" id="userName" placeholder="例：山田 太郎">
 
-        <label>メールアドレス（必須）</label>
-        <input type="text" id="userEmail" placeholder="例 ：taro@example.ac.jp">
+    <label>メールアドレス（必須）</label>
+    <input type="email" id="userEmail" placeholder="例：taro@example.ac.jp">
 
-        <label>大学名（必須）</label>
-        <input type="text" id="userUniversity" placeholder="例：○○大学">
+    <label>大学名（必須）</label>
+    <input type="text" id="userUniversity" placeholder="例：〇〇大学">
 
-        <label>学部・学科（必須）</label>
-        <input type="text" id="userDepartment" placeholder="例：工学部　情報工学科">
+    <label>学部・学科（必須）</label>
+    <input type="text" id="userDepartment" placeholder="例：工学部 情報工学科">
 
-        <label>学年（必須）</label>
-        <select id="userGrade">
-            <option value="">選択してください</option>
-            <option value="１年生">１年生</option>
-            <option value="２年生">２年生</option>
-            <option value="３年生">３年生</option>
-            <option value="４年生">４年生</option>
-            <option value="院生・その他">院生・その他</option>
-        </select>
+    <label>学年（必須）</label>
+    <select id="userGrade">
+      <option value="">選択してください</option>
+      <option value="1年生">1年生</option>
+      <option value="2年生">2年生</option>
+      <option value="3年生">3年生</option>
+      <option value="4年生">4年生</option>
+      <option value="院生・その他">院生・その他</option>
+    </select>
 
-        <label>懇親会への参加有無</label>
-        <div class="radio-group">
-            <label><input type="radio" name="party" value="しない" checked>しない</label>
-            <label><input type="radio" name="party" value="する" checked>する</label>
-        </div>
-
-         <label>興味のあるトピック（任意）</label>
-        <div class="checkbox-group">
-            <label><input type="checkbox" name="interest" value="プログラミング"> プログラミング</label>
-            <label><input type="checkbox" name="interest" value="デザイン"> デザイン</label>
-            <label><input type="checkbox" name="interest" value="キャリア・就活">キャリア・就活</label>
-        </div>
-        <label>住所（任意）</label>
-        <input type="text" id="userAddress" placeholder="住所を入力">
-
-        <label>ひとこと（任意）</label>
-        <textarea id="userMessage" placheholder="ご意見やメッセージなど"></textarea>
-
-        <button onclick="checkRegistration()">参加登録をする</button>
-
-        <div id="registCount"></div>
-        <div id="result"></div>
+    <label>懇親会への参加有無</label>
+    <div class="checkbox-radio">
+      <label><input type="radio" name="party" value="しない" checked> しない</label>
+      <label><input type="radio" name="party" value="する"> する</label>
     </div>
 
-    <script>
-        var registCount = 0
+    <label>興味のあるトピック（任意）</label>
+    <div class="checkbox-group">
+      <label><input type="checkbox" name="interest" value="プログラミング"> プログラミング</label>
+      <label><input type="checkbox" name="interest" value="デザイン"> デザイン</label>
+      <label><input type="checkbox" name="interest" value="キャリア・就活"> キャリア・就活</label>
+    </div>
 
-        // 参加処理登録
+    <label>住所（任意）</label>
+    <input type="text" id="userAddress" placeholder="住所を入力">
 
-        function checkRegistration() {
-            const name = document.getElementById('userName');
-            const address = document.getElementById('userAddress').value;
-            const email = document.getElementById('userEmail');
-            const university = document.getElementById('userUniversity');
-            const department = document.getElementById('userDepartment');
-            const grade = document.getElementById('userGrade');
-            const coment = document.getElementById('userMessage').value;
-
-            // 結果表示を初期化
-            const resultDiv = document.getElementById('result');
-
-            resultDiv.innerHTML = "";
-            resultDiv.className = "";
-
-            //入力エラー判定の初期化
-            name.className = "";
-            email.className = "";
-            university.className = "";
-            department.className = "";
-            grade.className = "";
-
-            // エラーの可否
-            let chkErr = false;
-
-            let message = "";
-
-            // 必須項目のバリデーション（検証）
-            // 名前
-            if (name.value.trim() === "") {
-                if(chkErr === false){
-                    name.focus();
-                    chkErr = true;
-                }
-                message += "<p>名前</p>";
-                name.className = "error";
-                
-            }else{
-                name.className = "normal";
-            }
-
-            // メール
-            if (email.value.trim() === "") {
-                if(chkErr === false){
-                    email.focus();
-                    chkErr = true;
-                }
-                message += "<p>メールアドレス</p>";
-                email.className = "error";
-          
-            }else{
-                email.className = "normal";
-            }
-
-            // 大学名
-            if (university.value.trim() === "") {
-                if(chkErr === false){
-                    university.focus();
-                    chkErr = true;
-                }
-                message += "<p>大学名</p>";
-                university.className = "error";
-  
-            }else{
-                university.className = "normal";
-            }
-
-            // 学部学科
-            if (department.value.trim() === "") {
-                if(chkErr === false){
-                    department.focus();
-                    chkErr = true;
-                }
-                message += "<p>学部・学科</p>";
-                department.className = "error";
-  
-            }else{
-                department.className = "normal";
-            }
-
-            // 学年
-            if (grade.value.trim() === "") {
-                if(chkErr === false){
-                    grade.focus();
-                    chkErr = true;
-                }
-                message += "<p>学年</p>";
-                grade.className = "error";
-
-            }else{
-                grade.className = "normal";
-            }
+    <label>ひとこと（任意）</label>
+    <textarea id="userMessage" placeholder="ご意見やメッセージなど"></textarea>
 
 
-            if (message !== "") {
-                resultDiv.className = "warning";
-                message += "が入力されていません。";
-                resultDiv.innerHTML = message;
-                return
-            }
+    <button onclick="checkRegistration()">参加登録をする</button>
 
-            // これ以降正常な時の処理
-            resultDiv.className = "success";
-            message = "ようこそ" + name.value + "さん！<br>学生交流会への仮登録が完了しました。";
-            message += "<br>メール；" + email.value;
+    <div id="registCount"></div>
+    <div id="result"></div>
+  </div>
 
-            // 懇親会参加有無
-            const radios = document.getElementsByName('party');
+  <script>
+    var registCount = 0;
 
-            let py = '';
+    /**
+     * 参加登録処理
+     **/
+    function checkRegistration() {
 
-            for (const radio of radios) {
-                if (radio.checked === true) {
-                        py = '<br>参加：';
-                        py += radio.value;
-                    
-                }
-            }
+      // バリデーションスタイルのクラス名
+      const errClassName = 'error';
+      const successClassName = 'success';
 
-            message += py
+      // ドキュメントの要素を取得
+      const elemName = document.getElementById('userName');
+      const elemEmail = document.getElementById('userEmail');
+      const elemUniversity = document.getElementById('userUniversity');
+      const elemDepartment = document.getElementById('userDepartment');
+      const elemGrade = document.getElementById('userGrade');
+      const elemAddress = document.getElementById('userAddress');
 
-            // チェックボックス（複数選択）の取得
-            const checkboxes = document.getElementsByName('interest');
+      // バリデーションスタイルの初期化（クラスの除去）
+      elemName.classList.remove(errClassName, successClassName);
+      elemEmail.classList.remove(errClassName, successClassName);
+      elemUniversity.classList.remove(errClassName, successClassName);
+      elemDepartment.classList.remove(errClassName, successClassName);
+      elemGrade.classList.remove(errClassName, successClassName);
+      elemAddress.classList.remove(errClassName, successClassName);
 
-            let interests = '';
+      // 入力した値を取得（トリム済み）
+      const valueName = elemName.value.trim();
+      const valueEmail = elemEmail.value.trim();
+      const valueUniversity = elemUniversity.value.trim();
+      const valueDepartment = elemDepartment.value.trim();
+      const valueGrade = elemGrade.value;
+      const valueAddress = elemAddress.value.trim();
 
-            for (const checkbox of checkboxes) {
-                if (checkbox.checked === true) {
-                    if (interests === '') {
-                        interests = '<br>興味：';
-                        interests += checkbox.value;
-                    } else {
-                        interests += ' ,' + checkbox.value
-                    }
-                }
-            }
+      // 結果表示を初期化
+      const resultDiv = document.getElementById('result');
 
-            if (interests !== "") {
-                message += interests;
-            }
-            if (address.trim() !== "") {
-                message += "<br>ご住所：" + address;
-            }
+      resultDiv.innerHTML = "";
+      resultDiv.className = "";
 
-            if(coment !== ""){
-                message += "<br>ひとこと<br>" + coment;
-            }
+      let chkErr = false;     // エラー・フラグ（true = エラーあり
 
-            resultDiv.innerHTML = message;
-
-
-
-            // DB保存を想定したログ出力
-            console.log("登録データ：", {
-                name, email, interests, address, university,department, grade,
-            });
-
-            // LocalStrage保存処理
-
-        // 三項演算子　A（条件）？　B（真）：C（偽）
-        // split文字列を”特定の区切り文字（，）”でバラバラにして配列化するメゾット（関数）
-        const arrayInterests = interests ? interests.split(','):[];
-
-        // 以下上記と同じ意味
-        /*
-        let arrayInterests;
-        if(interest !== ""){
-            arrayInterest = interest.split(',');
-        }else{
-            arrayInterest =[];
+      // 必須項目のバリデーション（検証）
+      if (valueName === "") {
+        // エラーのクラスを追加
+        elemName.classList.add(errClassName);
+        // 初めてエラーにフォーカスセット
+        if (chkErr === false) {
+          elemName.focus();
         }
-        */
-        
-        const userData = {
-            name: name.value,
-            email: email.value,
-            university: university.value,
-            department: department.value,
-            grade: grade.value,
-            interest: arrayInterests,
-            address: address,
-            message: coment,
-            party: radios.value,
-            // 更新日時
-            updateAt: new Date().toLocaleString()
-        };
+        chkErr = true;
+        resultDiv.className = errClassName;
+        resultDiv.innerHTML += "<p>名前が入力されていません</p>";
+      } else {
+        elemName.classList.add(successClassName);
+      }
 
-        // 保存実行（ローカルストレージへ）
-        saveToLocalStorage(userData);
-
-        console.log("登録データ：",{
-            name,email,university,department,grade,arrayInterests,address,coment
-        });
-
-        //
-            addRegistCount();
+      if (valueEmail === "") {
+        elemEmail.classList.add(errClassName);
+        if (chkErr === false) {
+          elemEmail.focus();
         }
+        chkErr = true;
+        resultDiv.className = errClassName;
+        resultDiv.innerHTML += "<p>メールアドレスが入力されていません</p>";
+      } else {
+        elemEmail.classList.add(successClassName);
+      }
 
-        
-
-        /*
-        *LocalStorageに保存
-        *キー：メールアドレス
-        */
-        function saveToLocalStorage(date){
-
-            // すでに保存されている「名簿オブジェクト」を取得なければ新しい空のオブジェクト｛｝を作る
-            const storageKey = 'student_list';
-            const currentListJson = localStorage.getItem(storageKey);
-            let studentList = currentListJson ? JSON.parse(currentListJson):{};
-        //メールアドレスをキーにして、データを追加
-        // 例：studentList["taro@exsample.jp"] = {name:"山田太郎",...}
-        studentList[date.email] = date;
-
-        // 文字列に戻して保存
-        localStorage.setItem(storageKey,JSON.stringify(studentList));
-
-         }
-
-
-        function addRegistCount() {
-            registCount++;
-            const registCountDiv = document.getElementById('registCount');
-            registCountDiv.innerHTML = "現在の登録者数：" + registCount + "人です。";
+      if (valueUniversity === "") {
+        elemUniversity.classList.add(errClassName);
+        if (chkErr === false) {
+          elemUniversity.focus();
         }
-    </script>
+        chkErr = true;
+        resultDiv.className = errClassName;
+        resultDiv.innerHTML += "<p>大学名が入力されていません</p>";
+      } else {
+        elemUniversity.classList.add(successClassName);
+      }
+
+      if (valueDepartment === "") {
+        elemDepartment.classList.add(errClassName);
+        if (chkErr === false) {
+          elemDepartment.focus();
+        }
+        chkErr = true;
+        resultDiv.className = errClassName;
+        resultDiv.innerHTML += "<p>学部・学科が入力されていません</p>";
+      } else {
+        elemDepartment.classList.add(successClassName);
+      }
+
+      if (valueGrade === "") {
+        elemGrade.classList.add(errClassName);
+        if (chkErr === false) {
+          elemGrade.focus();
+        }
+        chkErr = true;
+        resultDiv.className = errClassName;
+        resultDiv.innerHTML += "<p>学年が選択されていません</p>";
+      } else {
+        elemGrade.classList.add(successClassName);
+      }
+
+      // エラーが発生している
+      if (resultDiv.className !== "") {
+        return
+      }
+
+      resultDiv.className = successClassName;
+      let message = "ようこそ、" + valueName + " さん！<br>学生交流会への仮登録が完了しました。";
+      message += "<br>所属：" + valueUniversity + " " + valueDepartment + " (" + valueGrade + ")";
+      message += "<br>メール：" + valueEmail;
+
+      // ラジオボタンの取得
+      const radios = document.getElementsByName('party');
+      let valueParty;
+
+      for (const radio of radios) {
+        if (radio.checked === true) {
+          valueParty = radio.value;
+          message += "<br>懇親会の参加：" + radio.value;
+        }
+      }
+
+      // チェックボックス（複数選択）の取得
+      // const interests = [];
+      // const checkboxes = document.querySelectorAll('input[name="interest"]:checked');
+
+      const checkboxes = document.getElementsByName('interest');
+
+      let interests = '';
+
+      for (const checkbox of checkboxes) {
+        if (checkbox.checked === true) {
+          if (interests === '') {
+            interests += checkbox.value;
+          } else {
+            interests += ' ,' + checkbox.value;
+          }
+        }
+      }
+
+      if (interests !== '') {
+        message += '<br>興味：';
+        message += interests;
+      }
+
+      if (valueAddress !== "") {
+        message += "<br>ご住所：" + valueAddress;
+      }
+
+      // ひとこと
+      const valueMessage = document.getElementById('userMessage').value;
+      if (valueMessage !== "") {
+        message += "<br>ひとこと：" + valueMessage;
+      }
+
+      resultDiv.innerHTML = message;
+
+      /****************************************************
+       * --- ここからLocalStorage保存処理 ---
+       ***************************************************/
+      // 三項演算子 … Ａ（条件） ? Ｂ（真） : Ｃ（偽）
+      // split 文字列を”特定の区切り文字（ ,）” でバラバラにして配列化するメソッド（関数）
+      const arrayInterests = interests ? interests.split(' ,') : [];
+
+      /*** ↓↑ は同じ意味
+      let arrayInterests;
+      if (interests !== "") {
+        arrayInterests = interests.split(' ,');
+      }else{
+        arrayInterests = [];
+      }
+      ***/
+
+      const userData = {
+        name: valueName,
+        email: valueEmail,
+        university: valueUniversity,
+        department: valueDepartment,
+        grade: valueGrade,
+        interests: arrayInterests,
+        address: valueAddress,
+        message: valueMessage,
+        party: valueParty,
+        updatedAt: new Date().toLocaleString() // 更新日時
+      };
+
+      // 保存実行（ロカールストレージへ）
+      saveToLocalStorage(userData);
+
+      console.log("登録データ: ", {
+        valueName, valueEmail, valueUniversity, valueDepartment, valueGrade, arrayInterests, valueAddress
+      });
+
+      //
+      addRegistCount();
+    }
+
+    /**
+     * LocalStorageへ保存
+     * キー：メールアドレス
+     **/
+    function saveToLocalStorage(data) {
+
+      // 既に保存されている「名簿オブジェクト」を取得。なければ新しい空のオブジェクト {} を作る
+      const storageKey = 'student_list';
+      const currentListJson = localStorage.getItem(storageKey);
+      let studentList = currentListJson ? JSON.parse(currentListJson) : {};
+
+      // メールアドレスをキーにして、データを追加（または上書き）
+      // 例: studentList["taro@example.jp"] = { name: "山田太郎", ... }
+      studentList[data.email] = data;
+
+      // 文字列に戻して保存
+      localStorage.setItem(storageKey, JSON.stringify(studentList));
+
+    }
+
+    /**
+     * 登録回数のカウント
+     **/
+    function addRegistCount() {
+      registCount++;
+      const registCountDiv = document.getElementById('registCount');
+      registCountDiv.innerHTML = "現在の登録者数：「" + registCount + "」人です";
+    }
+  </script>
+
 </body>
-
 
 </html>
