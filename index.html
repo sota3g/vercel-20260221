@@ -64,19 +64,19 @@
     }
 
     .checkbox-group,
-    .checkbox-radio {
-      margin: 10px 0;
+    .radio-group {
+      margin: 5px 0;
     }
 
     .checkbox-group label,
-    .checkbox-radio label {
+    .radio-group label {
       display: inline-block;
       margin-right: 15px;
       font-weight: normal;
     }
 
     .checkbox-group input,
-    .checkbox-radio input {
+    .radio-group input {
       width: auto;
       margin-right: 5px;
     }
@@ -221,7 +221,7 @@
       </select>
 
       <label>懇親会への参加有無</label>
-      <div class="checkbox-radio">
+      <div class="radio-group">
         <label><input type="radio" name="party" value="しない" checked> しない</label>
         <label><input type="radio" name="party" value="する"> する</label>
       </div>
@@ -315,6 +315,35 @@
       resultDiv.className = "";
 
     }
+
+    windows.onload = function () {
+      // クエリパラメータの設定
+      setQeryParams();
+
+      // フォームの初期設定
+      setRegistForm();
+    }
+
+    // クエリパラメータの設定
+
+  function setQeryParams() {
+    // URLのパラメータ（？以降）の解析
+    const rapams = new URLSearchParams(window.location.search);
+
+    // "email"という名前のパラメータがあるか検索、取得
+    const paramEmail = params.get('email');
+
+    if (paramEmail) {
+      // 入力欄にセット
+      document.getElementById('userEmail').value = paramEmail;
+
+      // メールアドレスを取得した場合、自動で修正画面へ
+      const elemRegistClass = document.querySelector('input[name="registClass"][value="修正"]');
+      if (elemRegistClass) {
+        elemRegistClass.checked = true;
+      }
+    }
+  }
 
     /**
      * 参加登録処理
