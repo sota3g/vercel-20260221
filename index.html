@@ -274,7 +274,7 @@
       const deleteClassName = 'regist_delete';
       const inqClassName = 'form_inq';
       const elemRegistForm = document.getElementById('registForm');
-      elemRegistForm.classList.remove(newClassName, maintClassName, deleteClassName, inqClassName, elemRegistForm);
+      elemRegistForm.classList.remove(newClassName, maintClassName, deleteClassName, inqClassName);
 
       // 登録ボタン
       const elemButtonNew = document.getElementById('buttonNew');
@@ -316,7 +316,7 @@
 
     }
 
-    windows.onload = function () {
+    window.onload = function () {
       // クエリパラメータの設定
       setQeryParams();
 
@@ -328,7 +328,7 @@
 
   function setQeryParams() {
     // URLのパラメータ（？以降）の解析
-    const rapams = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(window.location.search);
 
     // "email"という名前のパラメータがあるか検索、取得
     const paramEmail = params.get('email');
@@ -630,7 +630,7 @@
           */
       }
 
-      alert('「'userData.name + '」さんのデータを読み込みました。');
+      alert('「' + userData.name + '」さんのデータを読み込みました。');
 
       // フォームを再設定
       const inqClassName = 'from_inq';

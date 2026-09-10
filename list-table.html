@@ -160,7 +160,7 @@
         row.insertCell(2).textContent = student.university;//学校
         row.insertCell(3).textContent = student.department;//学部・学科
         row.insertCell(4).textContent = student.grade;//学年
-        // row.insertCell(5).textContent = student.interests.join(',');//興味
+        row.insertCell(5).textContent = student.interests.join(',');//興味
         row.insertCell(6).textContent = student.address;//住所
         row.insertCell(7).textContent = student.message;//ひとこと
         row.insertCell(8).textContent = student.party;//懇親会
@@ -169,7 +169,7 @@
       }
 
       resultDiv.className = successClassName;
-      resultDiv.innerHTML = '${student.lenght}件のデータがありました。';
+      resultDiv.innerHTML = '${students.length}件のデータがありました。';
 
     }
   </script>
