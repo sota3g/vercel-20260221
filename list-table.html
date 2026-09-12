@@ -55,6 +55,9 @@
       display: flex; 
       gap: 15px;
       align-items: center;
+      border: 1px solid #2d2d2d;
+      padding: 3px 8px;
+      border-radius: 3px;
     }
     
     .filter-group label {
@@ -62,6 +65,7 @@
       align-items: center;
       margin-top: 0;
       font-weight: normal;
+
     }
 
     .filter-group input[type="radio"] {
@@ -191,6 +195,35 @@
       background-color: #f5f5f5;
     }
 
+    #pagination {
+      display: flex;
+      gap: 8px;
+      margin: 12px 0 16px;
+      align-items: center;
+    }
+
+    #pagination button {
+      min-width: 36px;
+      height: 36px;
+      padding: 0 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background-color: white;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    #pagination button:hover {
+      background-color: #f0f0f0;
+    }
+
+    #pagination button.active {
+      background-color: orange;
+      color: #333;
+      font-weight: bold;
+      border-color: darkorange;
+    }
+
   </style>
 </head>
 
@@ -217,10 +250,12 @@
 
     </div>
 
-    <button onclick="listTable()">参加者を照会する</button>
-
+    <button onclick="listTable(1)">参加者を照会する</button>
 
     <div id="result"></div>
+
+    <div id = "pagination"></div>
+    
     <div class = "table-area">
       <table>
       <thead>
@@ -250,7 +285,7 @@
     // https://github.com/grid-js/gridjs
     // https://gridjs.io/docs
 
-    function listTable(){
+    function listTable(page = 1){
 
       // バリデーションスタイルのクラス名
       const errClassName = 'error';
@@ -278,30 +313,42 @@
 
       const elemName = document.getElementById('userName');
       const valueName = elemName.value.trim();
-      let count = 0;
 
+       // 懇親会参加有無抽出
+      const elemParty = document.querySelector('input[name="filter"]:checked');
+      const valueParty = elemParty.value;
+
+      // 要素の抽出
       const studentList = JSON.parse(currentListJson);
       const students = Object.values(studentList);
-      students.forEach((student, index) =>{
+
+      const filteredStudents = students.filter((student, index) =>{
 
         // 名前の抽出
         if (valueName) {
           if (student.name.indexOf(valueName) === -1) {
-            return;
+            return false;
           }
         }
-
-        // 懇親会参加有無抽出
-        const elemParty = document.querySelector('input[name="filter"]:checked');
-        const valueParty = elemParty.value;
-
+        // 懇親会の抽出
         if (valueParty !== '全て') {
           if (student.party !== valueParty){
-            return;
+            return false;
           }
         }
 
-        count++;
+        return true;
+
+      });
+
+      const pageSize = 5;
+
+      const start = (page - 1) * pageSize;
+      const end = start + pageSize;
+
+      const pageStudents = filteredStudents.slice(start, end);
+
+      pageStudents.forEach((student, index) => {
         
         // 新しい行の作成
         const row = tbody.insertRow();
@@ -310,7 +357,9 @@
         const numberCell = row.insertCell(0);
 
         const link = document.createElement('a');
-        link.textContent = index + 1;
+
+        // ページ跨いでの連番
+        link.textContent = start + index + 1;
         link.href = `index.html?email=${encodeURIComponent(student.email)}`;
 
         numberCell.appendChild(link);
@@ -327,9 +376,38 @@
 
       });
 
+      const totalPages = Math.ceil(filteredStudents.length / pageSize)
 
-      resultDiv.className = successClassName;
-      resultDiv.innerHTML = `${count}件のデータがありました。`;
+      const pagination = document.getElementById('pagination');
+      pagination.innerHTML = '';
+
+      for (let i = 1; i <= totalPages; i++) {
+
+        const button = document.createElement('button');
+
+        button.textContent = i;
+
+        if (i === page) {
+          button.classList.add('active');
+        }
+
+        button.onclick = function() {
+          listTable(i);
+        };
+
+        pagination.appendChild(button);
+      }
+
+
+
+      if (filteredStudents.length > 0) {
+        resultDiv.className = successClassName;
+        resultDiv.innerHTML = `${filteredStudents.length}件のデータがありました。`;
+      } else {
+        resultDiv.className = errClassName;
+        resultDiv.innerHTML = "データが見つかりませんでした。";
+      }
+     
 
     }
   </script>
