@@ -317,11 +317,18 @@
     }
 
     window.onload = function () {
-      // クエリパラメータの設定
-      setQeryParams();
+
+      // URLからのメール取得
+      const paramEmail = setQeryParams();
 
       // フォームの初期設定
       setRegistForm();
+
+      // URLにメールがあった場合自動読み込み
+      if (paramEmail) {
+        loadRegistration();
+      }
+
     }
 
     // クエリパラメータの設定
@@ -343,6 +350,9 @@
         elemRegistClass.checked = true;
       }
     }
+
+    return paramEmail;
+
   }
 
     /**
@@ -633,7 +643,7 @@
       alert('「' + userData.name + '」さんのデータを読み込みました。');
 
       // フォームを再設定
-      const inqClassName = 'from_inq';
+      const inqClassName = 'form_inq';
       const elemRegistForm = document.getElementById('registForm');
       elemRegistForm.classList.add(inqClassName);
 

@@ -28,6 +28,48 @@
       border-left: 5px solid orange;
       padding-left: 15px;
     }
+
+    .search-area {
+      display: flex;
+      gap: 30px;
+      align-items: flex-end;
+    }
+
+    .search-area > label:first-child {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .search-item input[type="text"] {
+      width: 250px;
+      padding: 5px;
+
+    }
+
+    .search-item input[type="radio"] {
+      width: auto;
+      margin-right: 5px;
+    }
+
+    .filter-group {
+      display: flex; 
+      gap: 15px;
+      align-items: center;
+    }
+    
+    .filter-group label {
+      display: flex;
+      align-items: center;
+      margin-top: 0;
+      font-weight: normal;
+    }
+
+    .filter-group input[type="radio"] {
+      display: inline-block;
+      width: auto;
+      margin-right: 5px;
+
+    }
     
     label {
       display: block;
@@ -41,7 +83,7 @@
 
       width: 300px;
       padding: 12px;
-      margin-top: 20px;
+      margin: 20px 0px;
       background-color: orange;
       color: #333;
       border: none;
@@ -52,6 +94,12 @@
 
     button:hover {
       background-color: darkorange;
+    }
+
+    input {
+      display: block;
+      width: 300px;
+      padding: 5px;
     }
 
     #result {
@@ -65,6 +113,7 @@
       display: block !important;
       background-color: #d4edda;
       color: #155724;
+      margin : 10px 0px;
     }
 
     div.error {
@@ -82,7 +131,65 @@
     /* .error>p {
     maegin: 0;
     } */
-    
+    table {
+      width: 100%;
+      min-width: 1200px;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 14px;
+      padding: 10px;
+    }
+
+    .table-area {
+      max-height: 750px;
+      overflow-y: auto;
+      overflow-x: auto;
+    }
+
+    th,
+    td {
+      border: 1px solid #2d2d2d;
+      padding: 5px;
+      text-align: left;
+      border-bottom: 1px solid #2d2d2d;
+      border-right: 1px solid #2d2d2d;
+    }
+
+    th {
+      background-color: #f5f5f5;
+      font-weight: bold;
+      position:sticky;
+      top : 0;
+      z-index: 2;
+    }
+
+    td {
+      overflow-wrap: break-word;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #fafafa;
+    }
+
+    tr:hover {
+      background-color: aquamarine !important;
+    }
+
+    th:first-child,
+    td:first-child {
+      position: sticky !important;
+      left: 0;
+      z-index: 3;
+      background-color: #f5f5f5;
+    }
+
+    th:first-child {
+      position: sticky;
+      top: 0;
+      left: 0;
+      z-index: 4;
+      background-color: #f5f5f5;
+    }
 
   </style>
 </head>
@@ -93,13 +200,32 @@
     <h1>企業向け・学制交流会参加登録照会</h1>
     <p>参加者のリストをテーブル</p>
 
+    <div class = "search-area">
+      <div class = "search-item">
+         <label>名前（任意）</label>
+         <input type = "text" id = "userName" placeholder="全て">
+      </div>
+
+      <div class = "search-item">
+        <div class = "filter-group">
+          <label><input type = "radio" name = "filter" value = "全て" checked>すべて</label>
+          <label><input type = "radio" name = "filter" value = "する" >参加</label>
+          <label><input type = "radio" name = "filter" value = "しない" >不参加</label>
+
+        </div>
+      </div>
+
+    </div>
+
     <button onclick="listTable()">参加者を照会する</button>
 
 
     <div id="result"></div>
-    <table>
+    <div class = "table-area">
+      <table>
       <thead>
         <tr>
+          <th>No.</th>
           <th>名前</th>
           <th>email</th>
           <th>学校</th>
@@ -115,6 +241,8 @@
       <tbody id="table-body">
       </tbody>
     </table>
+    </div>
+    
   </div>
   <script>
 
@@ -148,28 +276,60 @@
         return;
       }
 
+      const elemName = document.getElementById('userName');
+      const valueName = elemName.value.trim();
+      let count = 0;
+
       const studentList = JSON.parse(currentListJson);
       const students = Object.values(studentList);
-      for (student of students) {
+      students.forEach((student, index) =>{
+
+        // 名前の抽出
+        if (valueName) {
+          if (student.name.indexOf(valueName) === -1) {
+            return;
+          }
+        }
+
+        // 懇親会参加有無抽出
+        const elemParty = document.querySelector('input[name="filter"]:checked');
+        const valueParty = elemParty.value;
+
+        if (valueParty !== '全て') {
+          if (student.party !== valueParty){
+            return;
+          }
+        }
+
+        count++;
+        
         // 新しい行の作成
         const row = tbody.insertRow();
 
         // セル　tdタグを一つずつ作成し、データを設定
-        row.insertCell(0).textContent = student.name;//名前
-        row.insertCell(1).textContent = student.email;//メール
-        row.insertCell(2).textContent = student.university;//学校
-        row.insertCell(3).textContent = student.department;//学部・学科
-        row.insertCell(4).textContent = student.grade;//学年
-        row.insertCell(5).textContent = student.interests.join(',');//興味
-        row.insertCell(6).textContent = student.address;//住所
-        row.insertCell(7).textContent = student.message;//ひとこと
-        row.insertCell(8).textContent = student.party;//懇親会
-        row.insertCell(9).textContent = student.updateAt;//登録日時
+        const numberCell = row.insertCell(0);
 
-      }
+        const link = document.createElement('a');
+        link.textContent = index + 1;
+        link.href = `index.html?email=${encodeURIComponent(student.email)}`;
+
+        numberCell.appendChild(link);
+        row.insertCell(1).textContent = student.name;
+        row.insertCell(2).textContent = student.email;//メール
+        row.insertCell(3).textContent = student.university;//学校
+        row.insertCell(4).textContent = student.department;//学部・学科
+        row.insertCell(5).textContent = student.grade;//学年
+        row.insertCell(6).textContent = student.interests.join(',');//興味
+        row.insertCell(7).textContent = student.address;//住所
+        row.insertCell(8).textContent = student.message;//ひとこと
+        row.insertCell(9).textContent = student.party;//懇親会
+        row.insertCell(10).textContent = student.updatedAt;//登録日時
+
+      });
+
 
       resultDiv.className = successClassName;
-      resultDiv.innerHTML = '${students.length}件のデータがありました。';
+      resultDiv.innerHTML = `${count}件のデータがありました。`;
 
     }
   </script>
