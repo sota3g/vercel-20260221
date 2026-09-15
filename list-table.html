@@ -270,7 +270,7 @@
           <th>住所</th>
           <th>ひとこと</th>
           <th>懇親会参加</th>
-          <th>登録日時</th>
+          <th onclick="sortBy('updatedAt')" style="cursor: pointer;">登録日時<span id="sortIcon_updatedAt"></span></th>
       </tr>
       </thead>
       <tbody id="table-body">
@@ -292,7 +292,8 @@
       
       sort: {
         name: 0,
-        grade: 0
+        grade: 0,
+        updatedAt: 0,
       }
     };
 
@@ -473,7 +474,14 @@
             break;
         }
 
-        const compare = leftValue.localeCompare(rightValue, 'ja');
+        let compare;
+        
+        // 日時をDate型で返す
+        if (columnName === 'updatedAt') {
+          compare = new Date (leftValue) - new Date(rightValue);
+        } else {
+          compare = leftValue.localeCompare(rightValue, 'ja');
+        }
 
         // 順番が決まった
         if (compare !== 0) {
