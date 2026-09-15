@@ -261,11 +261,11 @@
       <thead>
         <tr>
           <th>No.</th>
-          <th>名前</th>
+          <th onclick="sortBy('name')" style="cursor: pointer;">名前<span id="sortIcon_name"></span></th>
           <th>email</th>
           <th>学校</th>
           <th>学部・学科</th>
-          <th>学年</th>
+          <th onclick="sortBy('grade')" style="cursor: pointer;">学年<span id="sortIcon_grade"></span></th>
           <th>興味</th>
           <th>住所</th>
           <th>ひとこと</th>
@@ -281,9 +281,22 @@
   </div>
   <script>
 
+
     // 参加者グリッドを照会する
     // https://github.com/grid-js/gridjs
     // https://gridjs.io/docs
+
+    const CONFIG_PAGE = {
+      current: 1,
+      rows: 5,
+      
+      sort: {
+        name: 0,
+        grade: 0
+      }
+    };
+
+
 
     function listTable(page = 1){
 
@@ -322,6 +335,21 @@
       const studentList = JSON.parse(currentListJson);
       const students = Object.values(studentList);
 
+      students.sort((before,after) => {
+
+        // ソート対象の列を比較
+        const sortColumns = Object.keys(CONFIG_PAGE.sort);
+        const sortStates = CONFIG_PAGE.sort;
+
+        // 複合ソートの結果を返す
+        return _sortCompare(
+          before,
+          after,
+          sortColumns,
+          sortStates
+        );
+      });
+
       const filteredStudents = students.filter((student, index) =>{
 
         // 名前の抽出
@@ -341,10 +369,11 @@
 
       });
 
-      const pageSize = 5;
+      // ページネーションの準備
+      CONFIG_PAGE.current = page;
 
-      const start = (page - 1) * pageSize;
-      const end = start + pageSize;
+      const start = (CONFIG_PAGE.current - 1) * CONFIG_PAGE.rows;
+      const end = start + CONFIG_PAGE.rows;
 
       const pageStudents = filteredStudents.slice(start, end);
 
@@ -376,7 +405,8 @@
 
       });
 
-      const totalPages = Math.ceil(filteredStudents.length / pageSize)
+      // ページネーションの実行
+      const totalPages = Math.ceil(filteredStudents.length / CONFIG_PAGE.rows)
 
       const pagination = document.getElementById('pagination');
       pagination.innerHTML = '';
@@ -387,7 +417,7 @@
 
         button.textContent = i;
 
-        if (i === page) {
+        if (i === CONFIG_PAGE.current) {
           button.classList.add('active');
         }
 
@@ -407,9 +437,83 @@
         resultDiv.className = errClassName;
         resultDiv.innerHTML = "データが見つかりませんでした。";
       }
-     
-
     }
+
+    function _sortCompare(
+      before,
+      after,
+      sortColumns,
+      sortStates
+    ) {
+
+      // nameからgrade
+      for (const columnName of sortColumns) {
+        
+        let leftValue;
+        let rightValue;
+        
+        const sortState = sortStates[columnName];
+
+        switch (sortState) {
+
+          // ソートなし
+          case 0:
+            continue
+
+          // 昇順
+          case 1:
+            leftValue = before[columnName];
+            rightValue = after[columnName];
+            break;
+
+          //降順
+          case 2:
+            leftValue = after[columnName];
+            rightValue = before[columnName];
+            break;
+        }
+
+        const compare = leftValue.localeCompare(rightValue, 'ja');
+
+        // 順番が決まった
+        if (compare !== 0) {
+          return compare;
+        }
+      }
+
+      return 0;
+    }
+
+    function sortBy(columnName) {
+
+      // 現在の状態に1を足し、０１２をループさせる
+      CONFIG_PAGE.sort[columnName] = (CONFIG_PAGE.sort[columnName] + 1) % 3;
+
+      const sortState = CONFIG_PAGE.sort[columnName];
+
+      // アイコン取得
+      const icon = document.getElementById(`sortIcon_${columnName}`);
+
+      // アイコン変化
+      switch (sortState) {
+
+        case 1:
+          icon.textContent = '（昇順）';
+          break;
+
+        case 2:
+          icon.textContent = '（降順）';
+          break;
+
+        default:
+          icon.textContent = '';
+          break;
+      }
+
+      // 並び替え終了、リストを再表示
+      listTable(1);
+    }
+
   </script>
 
 </body>
